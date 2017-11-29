@@ -12,39 +12,126 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="../static/css/style.css"
+	rel="stylesheet" type="text/css" />
+	
+	<script th:href="@{/js/validators.js}" src="../js/validators.js"></script>
+	
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" th:href="@{/home}">Incomes And Outcomes</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><a th:href="@{/home}">Home</a></li>
-				<li><a th:href="@{/addOutcome}">Add outcome</a></li>
-				<li><a th:href="@{/outcomes/userOutcomes}">Outcomes</a></li>
-				<li sec:authorize="isAnonymous()"><a th:href="@{/login}">Login</a></li>
-				<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
-			</ul>
-		</div>
-	</nav>
-
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
+	
 	<div class="container">
 
-		<form th:action="@{/outcomesDateReport}" th:object="${datePeriod}"
-			method="get">
-
-			<h2>Show outcomes between dates</h2>
-			<div>
-				Date from: <input type="text" th:field="*{fromDate}" placeholder="From"> <br>
-				Date to: <input type="text" th:field="*{toDate}" placeholder="To"> <br>
-
-				<button type="submit">Show</button>
+		<div th:if="${errorMessage == null}">
+			<form th:action="@{outcomesDateReport}" th:object="${datePeriod}" onsubmit="return(validateReportDates());"
+				method="post">
+	
+				<h3>Show outcomes between dates</h3>
+				<div>
+					
+					<div class="form-group">
+				      <label for="DateFrom">Date from</label>
+				      <input type="text" class="form-control" th:field="*{fromDate}" id="fromDate" placeholder="From" name="DateFrom">
+	    			</div>
 				
+					<div class="form-group">
+				      <label for="DateTo">Date to</label>
+				      <input type="text" class="form-control" th:field="*{toDate}" id="toDate" placeholder="To" name="DateTo">
+	    			</div>
+	
+					<button type="submit" class="btn btn-default">Show</button>
+					
+				</div>
+			</form>
+			
+			<div>
+				<span id="jsValidator" style="color:red;"></span>
 			</div>
-
-		</form>
+			
+			<div th:if="${opds}">
+			
+					<br><br>
+					
+					<div>
+						Outcomes between <span th:text="${#dates.format(datePeriod.fromDate, 'dd-MM-yyyy') + ' - ' + #dates.format(datePeriod.toDate, 'dd-MM-yyyy')}"></span>
+					</div>
+					
+					<table class="table table-bordered">
+						<tr>
+							<th>Date</th>
+							<th>Outcomes</th>
+							<th>Category</th>
+							<th>Value</th>
+							<th>Modify</th>
+							
+						</tr>
+						<th:block th:each="opd : ${opds}">
+							<tr>
+								<td th:text="${#dates.format(opd.date, 'dd-MM-yyyy')}"></td>
+								<td>
+									<ul th:each="outcome : ${opd.operations}">
+										<li th:text="${outcome.shortDesc}"></li>
+									</ul>
+								</td>
+								
+								<td>
+									<ul th:each="outcome : ${opd.operations}">
+										<li th:if="${outcome.category != null && outcome.category.name != null}" th:text="${outcome.category.name}"> </li>
+									</ul>
+								</td>
+								
+								<td>
+									<ul th:each="outcome : ${opd.operations}">
+										<li th:text="${outcome.value}"></li>
+									</ul>
+								</td>
+								
+								<td>
+									<ul th:each="outcome : ${opd.operations}">
+										<li><a th:href="@{'editOutcome?id=' + ${outcome.id}}">Edit</a> | <a th:href="@{'deleteOutcome?id=' + ${outcome.id} + '&date=true'}">Delete</a></li>
+									</ul>	
+								</td>						
+	
+							</tr>
+						</th:block>
+						
+						<tr>
+							<td><b>Summary</b></td>
+							<td></td>
+							<td></td>
+							<td><b th:text="${summary}"></b></td>
+						</tr>
+					</table>
+					
+					<br>
+					
+					<h3>Summary by category</h3>
+					
+					<table class="table table-bordered">
+						<tr>
+							<th>Category</th>
+							<th>Value</th>
+							<th>Percent %</th>
+						</tr>
+						<th:block th:each="o : ${operationsByCat}">
+							<tr>
+								<td th:text="${o.name}"></td>
+								<td th:text="${o.value}"></td>
+								<td th:text="${o.value2}"></td>
+							</tr>
+						</th:block>
+					</table>
+					
+		
+				</div>
+			</div>
+			
+			<div th:if="${errorMessage}">
+				<h3 th:text="${errorMessage}"></h3>
+			</div>
 
 	</div>
 </body>

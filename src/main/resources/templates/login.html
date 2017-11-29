@@ -12,39 +12,54 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="static/css/style.css"
+	rel="stylesheet" type="text/css" />
 
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" th:href="@{/home}">Incomes And Outcomes</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><a th:href="@{/home}">Home</a></li>
-			</ul>
-		</div>
-	</nav>
-
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
+	
 	<div class="container">
-		<div th:if="${param.error}">Invalid username and password.</div>
-		<div th:if="${param.logout}">You have been logged out.</div>
+	
+		<div th:if="${successMessage}">
+			<span th:text="${successMessage}" style="color: green;"></span>
+			<br>
+		</div>
+	
+	
+		<h3>Enter your login and password</h3>
 		<form th:action="@{/login}" method="post">
-			<div>
-				<label> User Name : <input type="text" id="login"
-					name="login" th:placeholder="Login" />
-				</label>
+			<div class="row">
+				<div class="form-group col-lg-3">
+			      <label class="input-medium" for="login">User name</label>
+			      <input type="text" class="form-control" id="login" placeholder="Enter login" name="login" required>
+	    		</div>
+    		</div>
+    		<div class="row">
+	    		<div class="form-group col-lg-3">
+			      <label for="password">Password</label>
+			      <input type="password" class="form-control" id="password" placeholder="Enter password" name="password" required>
+	    		</div>
+    		</div>
+    		
+    		<div class="row form-group col-lg-3">
+    			 <label for="submit" th:if="${param.error}" style="color:red;">Invalid login or password!</label><br>
+				 <button id="submit" type="submit" class="btn btn-primary">Sign in</button>
 			</div>
-			<div>
-				<label> Password: <input type="password" id="password"
-					name="password" th:placeholder="Password" />
-				</label>
-			</div>
-			<div>
-				<input type="submit" value="Sign In" />
-			</div>
+			
+			<br>
+			
+				
+			<div th:if="${param.logout}"><br>You have been logged out.</div>	
+			
+			
 		</form>
-	</div>s
+		
+		
+		
+	</div>
+	
 </body>
 </html>

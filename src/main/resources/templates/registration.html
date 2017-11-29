@@ -12,37 +12,50 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="static/css/style.css"
+	rel="stylesheet" type="text/css" />
+	
+	<script th:href="@{/js/validators.js}" src="js/validators.js"></script>
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" th:href="@{/home}">Incomes And Outcomes</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><a th:href="@{/home}">Home</a></li>
-			</ul>
-		</div>
-	</nav>
-
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
+	
 	<div class="container">
 	
-		<form autocomplete="off" action="#" th:action="@{/registration}"
+		<form autocomplete="off" action="#" th:action="@{/registration}" onsubmit="return(validateRegistration());"
 			th:object="${user}" method="post" role="form">
 			<h2>Registration form</h2>
 
+			<div class="row">
+				<div class="form-group col-lg-3">
+					<label for="Name">Username</label>
+					<input type="text" class="form-control" th:field="*{userName}" id="Username" placeholder="User name" name="Username">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group col-lg-3">
+					<label for="Login">Login</label>
+					<input type="text" class="form-control" th:field="*{login}" id="Login" placeholder="Login" name="Login">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="form-group col-lg-3">
+					<label for="Password">Password</label>
+					<input type="password" class="form-control" th:field="*{password}" id="Password" placeholder="Password" name="Password">
+				</div>
+			</div>
 
-			Name: <input type="text" th:field="*{userName}" placeholder="Name">
-			<br> Login: <input type="text" th:field="*{login}"
-				placeholder="Login"> <br> Password: <input
-				type="password" th:field="*{password}"><br>
-
-			<button type="submit">Register user</button>
-
-			<span th:utext="${successMessage}"></span>
-
+			<div class="row form-group col-lg-6">
+				<label for="submit" id="jsValidator" style="color:red;" th:text="${errorMessage}"></label><br>
+				<button id="submit" type="submit" class="btn btn-primary">Register user</button>
+			</div>
+			
 		</form>
+		
 	</div>
 
 </body>

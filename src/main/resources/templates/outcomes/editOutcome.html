@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Edit outcome</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="../static/css/style.css"
+	rel="stylesheet" type="text/css" />
+	
+	<script th:href="@{/js/validators.js}" src="../js/validators.js"></script>
+</head>
+<body>
+
+
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
+	
+	<div class="container">
+			
+			<form action="#" th:action="@{/outcomes/editOutcome}" th:object="${outcome}" method="post" onsubmit="return(addOperationValidate('Outcome'));"
+			 role="form">
+				<h3>Edit outcome</h3>
+				<input type="hidden" th:field=*{id} />
+				<input type="hidden" th:field=*{category.id} />
+				<div class="form-group">
+			      <label for="Value">Value</label>
+			      <input type="number" step=".01" th:field="*{value}" class="form-control" id="Value" placeholder="Value" name="Value">
+    		    </div>
+			
+				<div class="form-group">
+			      <label for="Date">Date</label>
+			      <input type="text" th:field="*{date}" class="form-control" id="Date" placeholder="Date" name="Date">
+    		   </div>
+
+				<div class="form-group">
+					<label for="Category">Category</label>
+					<select class="form-control" th:field="*{category.name}" id="Category">
+						<option th:each="cat : ${categories}" th:value="${cat.name}" th:text="${cat.name}"/>
+					</select>
+				</div>
+					
+				<div class="form-group">
+			      <label for="ShortDescription">Short description</label>
+			      <input type="text" th:field="*{shortDesc}" class="form-control" id="ShortDescription" placeholder="Short description" name="ShortDescription">
+    		   </div>
+
+				<button type="submit" class="btn btn-default">Save</button>			
+			</form>
+			
+			<br>
+			
+			<div>
+				<span id="jsValidator" style="color:red;"></span>
+			</div>
+			
+			<div th:if="${errorMessage}">
+				<span th:text="${errorMessage}" style="color:red;"></span>
+			</div>
+		
+	</div>
+
+
+</body>
+</html>

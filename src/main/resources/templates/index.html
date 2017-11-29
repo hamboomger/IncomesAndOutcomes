@@ -12,35 +12,65 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script th:href="@{/js/validators.js}" src="js/validators.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="static/css/style.css"
+	rel="stylesheet" type="text/css" />
+	
+	
 </head>
 <body>
 
-	<nav class="navbar navbar-default">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" th:href="@{/home}">Incomes And Outcomes</a>
-			</div>
-			<ul class="nav navbar-nav">
-				<li class="active"><a th:href="@{/home}">Home</a></li>
-				<li sec:authorize="isAuthenticated()"><a th:href="@{/addOutcome}">Add outcome</a></li>
-				<li sec:authorize="isAuthenticated()"><a th:href="@{/outcomes/userOutcomes}">Outcomes</a></li>
-				<li sec:authorize="isAnonymous()"><a th:href="@{/login}">Login</a></li>
-				<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></li>
-			</ul>
-		</div>
-	</nav>
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
 
 	<div class="container">
 
 		<h1>Welcome!</h1>
 
 		<p>
-			Click <a th:href="@{/hello}">here</a> to see a greeting.
+			Incomes and outcomes is app to help you to manage your finances.
+			<br> Just click on "Outcomes" or "Incomes" to add some operations or see report.
 		</p>
 
 		<div sec:authorize="isAnonymous()">
 			<br> <a th:href="@{/registration}">Create account</a>
 		</div>
+		
+		
+		<div sec:authorize="isAuthenticated()">
+			<div th:if="${errorMessage == null}">
+
+				<form th:action="@{report}" th:object="${datePeriod}" method="post" onsubmit="return(validateReportDates());">
+					<h3>Show operations report</h3>
+					
+					<div class="form-group">
+				      <label for="Date from">Date from</label>
+				      <input type="text" class="form-control" id="fromDate" th:field="*{fromDate}" placeholder="From" name="fromDate">
+	    			</div>
+	    			
+	    			<div class="form-group">
+				      <label for="Date to">Date to</label>
+				      <input type="text" class="form-control" id="toDate" th:field="*{toDate}" placeholder="To" name="toDate">
+	    			</div>
+	    			
+	    			<button type="submit" class="btn btn-primary">Show report</button>
+	    		</form>
+	    		
+    		</div>
+    		
+    		<div>
+				<span id="jsValidator" style="color:red;"></span>
+			</div>
+			
+			<div th:if="${errorMessage}">
+	   			<h3 th:text="${errorMessage}"></h3>
+	   		</div>
+	   		
+	   		<br><br>
+
+		</div>
+		
 
 	</div>
 </body>

@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import pl.piterpti.model.Outcome;
@@ -16,7 +17,7 @@ public class OutcomeServiceImpl implements OutcomeService {
 	private OutcomeRepository outcomeRepository;
 	
 	@Override
-	public void saveOutcome(Outcome outcome) {
+	public void save(Outcome outcome) {
 		outcomeRepository.save(outcome);
 	}
 
@@ -28,14 +29,31 @@ public class OutcomeServiceImpl implements OutcomeService {
 	@Override
 	public void deleteOutcome(long outcomeId) {
 		outcomeRepository.delete(outcomeId);
-		
+	}
+	
+	public List<Outcome> findUserOutcomesWithLimit(String login, Pageable pageable) {
+		return outcomeRepository.findUserOutcomesWithLimit(login, pageable);		
 	}
 
 	@Override
-	public List<Outcome> findByUserIdAndInDatePeroid(int userId, Date fromDate, Date toDate) {
-		// TODO Auto-generated method stub
-		
-		return null;
+	public Outcome findById(long id) {
+		return outcomeRepository.findOne(id);
 	}
+
+	@Override
+	public void deleteAll() {
+		outcomeRepository.deleteAll();
+	}
+
+	@Override
+	public long userOutcomesCount(String login) {
+		return outcomeRepository.userOutcomesCount(login);
+	}
+
+	@Override
+	public List<Outcome> findUserOutcomesInDate(long userId, Date fromDate, Date toDate) {
+		return outcomeRepository.findUserOutcomesInTime(userId, fromDate, toDate);
+	}
+
 
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Account management</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="static/css/style.css"
+	rel="stylesheet" type="text/css" />
+	
+	<script th:href="@{/js/validators.js}" src="js/validators.js"></script>
+</head>
+
+<body>
+
+
+	<div th:replace="fragments/navigationFragment :: navigation"></div>
+	
+	<div class="container">
+		
+		<h3>User <span th:text="${#authentication.getPrincipal().getUsername()}"></span> account management</h3>
+		
+		<div>
+			If you want to delete Your account <a id="deleteAccount" href="#" onclick="showDeleteButton();">click here</a>.
+		</div>
+		
+		<div id="deleteAccountForm" style="display: none;">
+			<p style="color: red;">Warning! This operation is irreversible</p>
+			<form th:action="@{/deleteAccount}">
+				<button type="submit" class="btn btn-danger">Delete account</button>
+			</form>
+		</div>
+
+		<form th:action="@{/changePassword}" method="post" onsubmit="return(validatePasswordChange());">
+			<h3>Change password</h3>
+
+			<div class="form-group">
+				<label for="OldPassword">Old password</label>
+				 <input type="password"	class="form-control" id="oldPassword" th:value="${oldPassword}" name="oldPassword">
+			</div>
+			
+			<div class="form-group">
+				<label for="NewPassword">New password</label>
+				 <input type="password"	class="form-control" id="newPassword" th:value="${newPassword}" name="newPassword">
+			</div>
+			
+			<div class="form-group">
+				<label for="NewPasswordRepeat">New password (confirm)</label>
+				 <input type="password"	class="form-control" id="newPasswordRepeat" th:value="${newPasswordRepeat}" name="newPasswordRepeat">
+			</div>
+			
+			<button type="submit" class="btn btn-success">Change password</button>
+		</form>
+		
+		<br>
+		
+		<div>
+			<span id="jsValidator" style="color:red;"></span>
+		</div>
+		
+		<div th:if="${changePswdError}">
+			<span th:text="${changePswdError}" style="color:red;"></span> 
+		</div>
+		
+		<div th:if="${changePswdMsg}">
+			<span th:text="${changePswdMsg}" style="color:green;"></span>
+		</div>
+		
+	</div>
+	
+	
+	<script>
+	
+		function showDeleteButton() {
+			var element = document.getElementById("deleteAccountForm");
+			var textEl = document.getElementById("deleteAccountTxt");
+			if (element.style.display === "none") {
+				element.style.display = "block";
+			} else {
+				element.style.display = "none";
+			}
+		}
+	
+	</script>
+	
+	
+</body>
+</html>

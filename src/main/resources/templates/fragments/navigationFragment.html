@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+<title>Incomes and Outcomes</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<link th:href="@{/css/style.css}" href="static/css/style.css"
+	rel="stylesheet" type="text/css" />
+</head>
+<body>
+
+	<div th:fragment="navigation">
+	
+		<nav class="navbar navbar-inverse">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>                        
+		      </button>
+		      <a class="navbar-brand" th:href="@{/home}">Incomes And Outcomes</a>
+		    </div>
+		    <div class="collapse navbar-collapse" id="myNavbar">
+		     	 <ul class="nav navbar-nav">
+					<li th:class="${activeHome}"><a th:href="@{/home}">Home</a></li>
+					<li sec:authorize="isAuthenticated()" th:class="${activeIncomes}" class="dropdown dropdown-submenu"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Incomes<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+	                        <li class="kopie"><a th:href="@{/incomes/userIncomes}">Incomes</a></li>
+							<li><a th:href="@{/incomes/addIncome}">Add income</a></li>
+							<li><a th:href="@{/incomes/incomesDateReport}">Incomes date report</a></li>
+						</ul>
+					</li>
+					
+					<li sec:authorize="isAuthenticated()" class="dropdown dropdown-submenu" th:class="${activeOutcomes}"><a class="dropdown-toggle" data-toggle="dropdown"  href="#">Outcomes <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+	                        <li class="kopie"><a th:href="@{/outcomes/userOutcomes}">Outcomes</a></li>
+							<li><a th:href="@{/outcomes/addOutcome}">Add outcome</a></li>
+							<li><a th:href="@{/outcomes/outcomesDateReport}">Outcomes date report</a></li>
+						</ul>
+					</li>
+					
+					<li sec:authorize="isAuthenticated()" class="dropdown dropdown-submenu" th:class="${activeCategories}"><a class="dropdown-toggle" data-toggle="dropdown"  href="#">Categories<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							 <li><a th:href="@{/categories}">Categories</a></li>
+							 <li><a th:href="@{/categories/addCategory}">Add category</a></li>
+						</ul>
+					</li>
+					
+					<li sec:authorize="isAuthenticated()" class="dropdown dropdown-submenu" th:class="${activeTasks}"><a class="dropdown-toggle" data-toggle="dropdown"  href="#">Tasks<span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							 <li><a th:href="@{/tasks}">Tasks</a></li>
+							 <li><a th:href="@{/tasks/addTask}">Add task</a></li>
+							 <li><a th:href="@{/tasks/tasksHistory}">Tasks history</a></li>
+						</ul>
+					</li>
+					
+					<li sec:authorize="isAuthenticated()" th:class="${activeAccountSettings}"><a th:href="@{/account}">Account settings</a></li>
+					
+				</ul>
+		      <ul class="nav navbar-nav navbar-right">
+		        <li sec:authorize="isAnonymous()" th:class="${activeRegistration}"><a th:href="@{/registration}">Create account</a></li>
+		        <li sec:authorize="isAnonymous()" th:class="${activeLogin}"><a th:href="@{/login}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"><span class="glyphicon glyphicon-log-out"></span> Logout [<span th:text="${#authentication.getPrincipal().getUsername()}" style="color: white; font-weight: bold;"></span>]</a></li>
+		      </ul>
+		    </div>
+		  </div>
+		</nav>
+		
+	</div>
+</body>
+
+</html>

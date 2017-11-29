@@ -48,6 +48,18 @@ public class User {
 	@OneToMany
 	@JoinColumn(name = "user_id")
 	private List<Outcome> outcomes;
+	
+	@OneToMany
+	@JoinColumn(name = "user_id")
+	private List<Income> incomes;
+	
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "user_categories", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "id"))
+	private List<Category> categories;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id")
+	private List<Task> tasks;
 
 	public long getId() {
 		return id;
@@ -104,10 +116,66 @@ public class User {
 	public void setOutcomes(List<Outcome> outcomes) {
 		this.outcomes = outcomes;
 	}
+	
+	public List<Income> getIncomes() {
+		return incomes;
+	}
+
+	public void setIncomes(List<Income> incomes) {
+		this.incomes = incomes;
+	}
+	
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
+	}
+	
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", login=" + login + ", password=" + Arrays.toString(password) + ", userName="
 				+ userName + "]";
+	}
+	
+	
+	public boolean hasOperation(long operationId) {
+		Operation o = new Outcome();
+		o.setId(operationId);
+		return hasOperation(o);
+	}
+	
+	/**
+	 * Verify that passed incomes/outcomes are available for user 
+	 * @param operation
+	 * @return
+	 */
+	public boolean hasOperation(Operation operation) {
+		if (incomes != null) {
+			for (Operation o : incomes) {
+				if (o.getId() == operation.getId()) {
+					return true;
+				}
+			}
+		}
+		
+		if (outcomes != null) {
+			for (Operation o : outcomes) {
+				if (o.getId() == operation.getId()) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

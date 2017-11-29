@@ -10,9 +10,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class LoginController {
+	
+	private static final String ACTIVE_LOGIN = "activeLogin";
 
 	@RequestMapping(value = "/login",  method = RequestMethod.GET)
-	public ModelAndView login() {
+	public ModelAndView login(String successMessage) {
 		
 		ModelAndView modelAndView = new ModelAndView();
 		
@@ -21,13 +23,16 @@ public class LoginController {
 		if (auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken)) {
 			
 			// user logged in
-			modelAndView.setViewName("hello");
+			modelAndView.setViewName("redirect:/home");
 			
 		} else {
 			
 			// user not logged in
 			modelAndView.setViewName("login");
-			
+			modelAndView.addObject(ACTIVE_LOGIN, "active");			
+			if (successMessage != null && "true".equals(successMessage)) {
+				modelAndView.addObject("successMessage", "User has been registered succesfully!");
+			}
 		}
 		
 		return modelAndView;

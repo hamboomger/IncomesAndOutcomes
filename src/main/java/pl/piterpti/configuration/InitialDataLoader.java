@@ -1,5 +1,13 @@
 package pl.piterpti.configuration;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -7,18 +15,27 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import pl.piterpti.constants.UserRoles;
+import pl.piterpti.model.Category;
 import pl.piterpti.model.Role;
 import pl.piterpti.repository.RoleRepository;
+import pl.piterpti.service.CategoryService;
 
 @Component
 public class InitialDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
 	private Logger logger = Logger.getLogger(InitialDataLoader.class);
-
+	
+	private static final String CATEGORIES_FILE_URL = "categories.txt";
+	
 	boolean alreadySetup = false;
+	
+	boolean readCategoriesFromFile = false;
 
 	@Autowired
 	private RoleRepository roleRepository;
+	
+	@Autowired
+	private CategoryService categoryService;
 	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
@@ -27,6 +44,77 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 
 			checkRoleExistAndAddToDatabase();
 
+		}
+		
+		if (readCategoriesFromFile) {
+			logger.info("Loading categories from file: " + CATEGORIES_FILE_URL);
+			File categoriesFile = new File(CATEGORIES_FILE_URL);
+			if (categoriesFile.exists()) {
+				
+				importCategoriesFromFile(categoriesFile);
+				
+			}
+		}
+	}
+	
+	/**
+	 * Removes categories from DB and add all from passed file
+	 * @param file
+	 */
+	private void importCategoriesFromFile(File file) {
+		
+		BufferedReader br = null;
+		String line;
+		
+		List<String> categoryList = new ArrayList<>();
+		
+		boolean ok = false;
+		
+		try {
+			
+			br = new BufferedReader(new FileReader(file));
+			
+			while ((line = br.readLine()) != null) {
+				
+				if (!line.isEmpty()) {
+					categoryList.add(line);
+				}
+			}
+			
+			ok = true;
+			
+		} catch (FileNotFoundException e) {
+			// thats should not happen
+			logger.error(e);
+			
+		} catch (IOException e) {
+			
+			logger.error(e);
+			
+		} finally {
+			
+			if (br != null) {
+				try {
+					br.close();					
+				} catch (Exception e) {
+					logger.error(e);
+				}
+			}
+			
+		}
+		
+		if (ok) {
+			// import to DB
+			logger.info("Deleting all categories and add new: " + categoryList);
+			categoryService.deleteAll();
+			
+			Category category;
+			for (String s : categoryList) {
+				category = new Category();
+				category.setName(s);
+				
+				categoryService.save(category);
+			}
 		}
 	}
 
